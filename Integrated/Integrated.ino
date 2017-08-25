@@ -18,6 +18,8 @@ float hum ;
 int i = 0 ; // use the i as the indicator to determin read from which digil output or analogue out
 const int flameSensorMin = 0;
 const int flameSensorMax = 1024;
+int lightSensorPin = A2;
+int lightSensorValue = 0 ;
 
 void setup() {
   // put your setup code here, to run once:
@@ -31,11 +33,11 @@ void loop() {
     i = 0 ;// avoid overflow 
   }
 
-  if(i % 3==0) {
+  if(i % 4==1) {
     Serial.print("gs");
     Serial.print(readGasSensor());
     Serial.println("ge");
-  } else if(i%3==1)  {
+  } else if(i%4==2)  {
     hum = dht.readHumidity();
     temp = dht.readTemperature();
     Serial.print("hts");
@@ -43,13 +45,19 @@ void loop() {
     Serial.print("-");
     Serial.print(temp);
     Serial.println("hte");
-  } else {
+  } else if(i%4==3){
     int range = detectFire();
     if(range == 0 || range ==1) {
       Serial.println("Fire");
     } else {
       Serial.println("No F");
     }
+  } else {
+    lightSensorValue = analogRead(lightSensorPin);
+    Serial.print("ls");
+    Serial.print(lightSensorValue);
+    Serial.println("le");
+    
   }
   i++;
 }
